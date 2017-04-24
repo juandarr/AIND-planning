@@ -82,7 +82,7 @@ Goal(At(C1, JFK) ∧ At(C3, JFK) ∧ At(C2, SFO) ∧ At(C4, SFO))
 ```
 
 #### TODO: Implement methods and functions in `my_air_cargo_problems.py`
-- `AirCargoProblem.get_actions` method including `load_actions` and `unload_actions` sub-functions
+- `AirCargoProblem.get_actions` method including `load_actions` and `unload_actions` sub-functions [Checked!]
 - `AirCargoProblem.actions` method
 - `AirCargoProblem.result` method
 - `air_cargo_p2` function
