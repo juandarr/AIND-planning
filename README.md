@@ -83,10 +83,10 @@ Goal(At(C1, JFK) ∧ At(C3, JFK) ∧ At(C2, SFO) ∧ At(C4, SFO))
 
 #### TODO: Implement methods and functions in `my_air_cargo_problems.py`
 - `AirCargoProblem.get_actions` method including `load_actions` and `unload_actions` sub-functions [Checked!]
-- `AirCargoProblem.actions` method
-- `AirCargoProblem.result` method
-- `air_cargo_p2` function
-- `air_cargo_p3` function
+- `AirCargoProblem.actions` method [Checked!]
+- `AirCargoProblem.result` method [Checked!]
+- `air_cargo_p2` function [Checked!]
+- `air_cargo_p3` function [Checked!]
 
 #### TODO: Experiment and document metrics for non-heuristic planning solution searches
 * Run uninformed planning searches for `air_cargo_p1`, `air_cargo_p2`, and `air_cargo_p3`; provide metrics on number of node expansions required, number of goal tests, time elapsed, and optimality of solution for each search algorithm. Include the result of at least three of these searches, including breadth-first and depth-first, in your write-up (`breadth_first_search` and `depth_first_graph_search`). 
