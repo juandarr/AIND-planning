@@ -207,9 +207,6 @@ class AirCargoProblem(Problem):
         return count
 
 
-        return count
-
-
 def air_cargo_p1() -> AirCargoProblem:
     cargos = ['C1', 'C2']
     planes = ['P1', 'P2']
