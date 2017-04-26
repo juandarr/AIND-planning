@@ -119,18 +119,22 @@ class AirCargoProblem(Problem):
             e.g. 'FTTTFF'
         :return: list of Action objects
         """
-
         possible_actions = []
         kb = PropKB()
+        #Decode the clauses for the given state
         kb.tell(decode_state(state, self.state_map).pos_sentence())
+        #Go through every action in actions_list
         for action in self.actions_list:
             is_possible = True
+            #If positive precondition is not present in clauses of state, action is not possible
             for clause in action.precond_pos:
                 if clause not in kb.clauses:
                     is_possible = False
+            # If negative precondition is present in clauses of state, action is not possible
             for clause in action.precond_neg:
                 if clause in kb.clauses:
                     is_possible = False
+            #If action is possible, append it to the list of possible actions
             if is_possible:
                 possible_actions.append(action)
         return possible_actions
@@ -146,6 +150,7 @@ class AirCargoProblem(Problem):
         """
         new_state = FluentState([], [])
         old_state = decode_state(state, self.state_map)
+        #Append all possible clauses to the new_state list, given the old_state and the taken action
         for fluent in old_state.pos:
             if fluent not in action.effect_rem:
                 new_state.pos.append(fluent)
@@ -174,7 +179,7 @@ class AirCargoProblem(Problem):
         return True
 
     def h_1(self, node: Node):
-        # note that this is not a true heuristic
+        #Note that this is not a true heuristic
         h_const = 1
         return h_const
 
@@ -185,7 +190,7 @@ class AirCargoProblem(Problem):
         out from the current state in order to satisfy each individual goal
         condition.
         '''
-        # requires implemented PlanningGraph class
+        #Requires implemented PlanningGraph class
         pg = PlanningGraph(self, node.state)
         pg_levelsum = pg.h_levelsum()
         return pg_levelsum
@@ -245,7 +250,7 @@ def air_cargo_p2() -> AirCargoProblem:
            ]
     neg = [expr('At(C1, JFK)'),
            expr('At(C1, ATL)'),
-           expr('At(C2, SFO)'),
+           expr('At(C2, SFO)'),c
            expr('At(C2, ATL)'),
            expr('At(C3, SFO)'),
            expr('At(C3, JFK)'),
