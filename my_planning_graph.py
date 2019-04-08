@@ -304,31 +304,33 @@ class PlanningGraph():
         :return:
             adds A nodes to the current level in self.a_levels[level]
         '''
-        # TODO add action A level to the planning graph as described in the Russell-Norvig text
-        # 1. determine what actions to add and create those PgNode_a
+        # Example: the A0 level will iterate through all possible actions for the problem and add a PgNode_a to a_levels[0]
+        #   set iff all prerequisite literals for the action hold in S0.  This can be accomplished by testing
+        #   to see if a proposed PgNode_a has prenodes that are a subset of the previous S level.  Once an
+        #   action node is added, it MUST be connected to the S node instances in the appropriate s_level set.
 
+        # 1. determine what actions to add and create those PgNode_a
+        #Append set for the new level
         self.a_levels.append(set())  # S0 set of s_nodes - empty to start
         for action in self.all_actions:
             add_action = True
+            #If precondition node prenode_p is not in the s_levels list, don't add action
             for prenode_p in action.precond_pos:
                 if PgNode_s(prenode_p, True) not in self.s_levels[level]:
                     add_action = False
                     break
+            #If precondition node prenode_n is not in the s_levels list, don't add action
             for prenode_n in action.precond_neg:
                 if PgNode_s(prenode_n, False) not in self.s_levels[level]:
                     add_action = False
                     break
+            #Add action node if true and connect action node as children of every s_node in the self.s_levels[level] list
             if add_action:
                 action_node = PgNode_a(action)
                 self.a_levels[level].add(action_node)
                 # 2. connect the nodes to the previous S literal level
                 for s_node in self.s_levels[level]:
                     s_node.children.add(action_node)
-
-        # for example, the A0 level will iterate through all possible actions for the problem and add a PgNode_a to a_levels[0]
-        #   set iff all prerequisite literals for the action hold in S0.  This can be accomplished by testing
-        #   to see if a proposed PgNode_a has prenodes that are a subset of the previous S level.  Once an
-        #   action node is added, it MUST be connected to the S node instances in the appropriate s_level set.
 
     def add_literal_level(self, level):
         ''' add an S (literal) level to the Planning Graph
@@ -339,7 +341,12 @@ class PlanningGraph():
         :return:
             adds S nodes to the current level in self.s_levels[level]
         '''
-        # TODO add literal S level to the planning graph as described in the Russell-Norvig text
+        # Example: every A node in the previous level has a list of S nodes in effnodes that represent the effect
+        #   produced by the action.  These literals will all be part of the new S level.  Since we are working with sets, they
+        #   may be "added" to the set without fear of duplication.  However, it is important to then correctly create and connect
+        #   all of the new S nodes as children of all the A nodes that could produce them, and likewise add the A nodes to the
+        #   parent sets of the S nodes
+
         # 1. determine what literals to add
         self.s_levels.append(set())  # S[level] set of s_nodes - empty to start
         for action_node in self.a_levels[level-1]:
@@ -348,11 +355,6 @@ class PlanningGraph():
                 self.s_levels[level].add(effect_node)
                 action_node.children.add(effect_node)
                 effect_node.parents.add(action_node)
-        # for example, every A node in the previous level has a list of S nodes in effnodes that represent the effect
-        #   produced by the action.  These literals will all be part of the new S level.  Since we are working with sets, they
-        #   may be "added" to the set without fear of duplication.  However, it is important to then correctly create and connect
-        #   all of the new S nodes as children of all the A nodes that could produce them, and likewise add the A nodes to the
-        #   parent sets of the S nodes
 
     def update_a_mutex(self, nodeset):
         ''' Determine and update sibling mutual exclusion for A-level nodes
@@ -456,7 +458,6 @@ class PlanningGraph():
         :return: bool
         '''
         # Test for Competing Needs between nodes
-
         for precond in node_a1.parents:
             for precond2 in node_a2.parents:
                 for mutex_node in precond2.mutex:
@@ -499,7 +500,7 @@ class PlanningGraph():
         :param node_s2: PgNode_s
         :return: bool
         '''
-        #TODO test for negation between nodes
+        #test for negation between nodes
         if node_s1.symbol == node_s2.symbol:
             if not(node_s1.is_pos != (not node_s2.is_pos)):
                 return True
@@ -521,7 +522,7 @@ class PlanningGraph():
         :param node_s2: PgNode_s
         :return: bool
         '''
-        # test for Inconsistent Support between nodes
+        #test for Inconsistent Support between nodes
         for parent2 in node_s2.parents:
             if (node_s1 in parent2.children and node_s2 in parent2.children):
                 return False
@@ -537,30 +538,17 @@ class PlanningGraph():
         '''The sum of the level costs of the individual goals (admissible if goals independent)
         :return: int
         '''
-
-        # TODO implement
-        # for each goal in the problem, determine the level cost, then add them together
+        #for each goal in the problem, determine the level cost, then add them together
         level_sum = 0
-        level = 0
-        goal_list =[]
-
+        #Create goal_list list
         for goal in self.problem.goal:
-            goal_list += [goal]
-
-        while len(goal_list)>0:
-            for goal in goal_list:
-                leave_for = False
-
-                for node_s in self.s_levels[level]:
-                    if node_s.symbol == goal and node_s.is_pos == True:
-                        level_sum += level
-                        goal_list.remove(goal)
-                        leave_for = True
-                        break
-                if leave_for:
+            goal_included = False
+            for level in range(len(self.s_levels)):
+                # For every goal in the list check whether it is present in the self.s_levels current level list
+                if PgNode_s(goal, True) in self.s_levels[level]:
+                    level_sum += level
+                    goal_included = True
                     break
-            if level>0:
-                if self.s_levels[level] == self.s_levels[level - 1]:
-                    break
-            level += 1
+            if not(goal_included):
+                return float("inf")
         return level_sum
