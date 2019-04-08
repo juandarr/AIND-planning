@@ -148,7 +148,7 @@ classes, and the search methods in the AIMA library.
 
 ### Written Analysis
 
-Here you can access the [written analysis]().
+Here you can access the [written analysis](https://github.com/juandarr/Planning-search/blob/master/documentation%20project/heuristic_analysis.pdf).
 
 #### DONE: Include the following in your written analysis.  
 - Provide an optimal plan for Problems 1, 2, and 3.
@@ -164,5 +164,11 @@ implemented in the `example_have_cake` module as an example.
     - `python -m unittest tests.test_my_air_cargo_problems`
     - `python -m unittest tests.test_my_planning_graph`
 - The `run_search` script is provided for gathering metrics for various search methods on any or all of the problems and should be used for this purpose.
+
+# License 
+
+Copyright (c) Udacity and Juan David Rios. All rights reserved.
+
+Licensed under the [MIT](https://github.com/juandarr/Planning-search/blob/master/LICENSE) License.
 
 
